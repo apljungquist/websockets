@@ -25,10 +25,12 @@ fixing regressions shortly after a release.
 Only documented APIs are public. Undocumented APIs are considered private.
 They may change at any time.
 
-9.1
-...
+9.0.2
+.....
 
 *In development*
+
+* Restored compatibility with mypy.
 
 9.0.1
 .....

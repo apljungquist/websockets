@@ -24,7 +24,6 @@ from .headers import (
 )
 from .http import USER_AGENT, build_host
 from .http11 import Request, Response
-from .imports import lazy_import
 from .typing import (
     ConnectionOption,
     ExtensionHeader,
@@ -35,15 +34,9 @@ from .typing import (
 from .uri import parse_uri
 from .utils import accept_key, generate_key
 
+# See #940 for why lazy_import isn't used here for backwards compatibility.
+from .legacy.client import * # noqa
 
-lazy_import(
-    globals(),
-    aliases={
-        "connect": ".legacy.client",
-        "unix_connect": ".legacy.client",
-        "WebSocketClientProtocol": ".legacy.client",
-    },
-)
 
 __all__ = ["ClientConnection"]
 
