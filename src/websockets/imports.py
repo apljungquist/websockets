@@ -37,7 +37,7 @@ def lazy_import(
 
     Typical use::
 
-        __getattr__, __dir__ = lazy_import(
+        lazy_import(
             globals(),
             aliases={
                 "<name>": "<source module>",
