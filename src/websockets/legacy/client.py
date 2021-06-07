@@ -514,13 +514,6 @@ class Connect:
         # Backwards compatibility: recv() used to return None on closed connections
         legacy_recv: bool = kwargs.pop("legacy_recv", False)
 
-        # Backwards compatibility: the loop parameter used to be supported.
-        loop: Optional[asyncio.AbstractEventLoop] = kwargs.pop("loop", None)
-        if loop is None:
-            loop = asyncio_get_running_loop()
-        else:
-            warnings.warn("remove loop argument", DeprecationWarning)
-
         wsuri = parse_uri(uri)
         if wsuri.secure:
             kwargs.setdefault("ssl", True)
@@ -544,7 +537,6 @@ class Connect:
             max_queue=max_queue,
             read_limit=read_limit,
             write_limit=write_limit,
-            loop=loop,
             host=wsuri.host,
             port=wsuri.port,
             secure=wsuri.secure,
@@ -554,7 +546,13 @@ class Connect:
             subprotocols=subprotocols,
             extra_headers=extra_headers,
             logger=logger,
+            **({"loop": kwargs["loop"]} if "loop" in kwargs else {}),
         )
+
+        # Backwards compatibility: the loop parameter used to be supported.
+        loop: Optional[asyncio.AbstractEventLoop] = kwargs.pop("loop", None)
+        if loop is None:
+            loop = asyncio_get_running_loop()
 
         if kwargs.pop("unix", False):
             path: Optional[str] = kwargs.pop("path", None)

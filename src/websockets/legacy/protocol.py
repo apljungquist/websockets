@@ -55,7 +55,7 @@ from ..frames import (
     serialize_close,
 )
 from ..typing import Data, LoggerLike, Subprotocol
-from .compatibility import loop_if_py_lt_38
+from .compatibility import asyncio_get_running_loop, loop_if_py_lt_38
 from .framing import Frame
 
 
@@ -113,7 +113,7 @@ class WebSocketCommonProtocol(asyncio.Protocol):
         secure: Optional[bool] = None,
         timeout: Optional[float] = None,
         legacy_recv: bool = False,
-        loop: Optional[asyncio.AbstractEventLoop] = None,
+        **kwargs: Any,
     ) -> None:
         # Backwards compatibility: close_timeout used to be called timeout.
         if timeout is None:
@@ -145,8 +145,12 @@ class WebSocketCommonProtocol(asyncio.Protocol):
         # Track if DEBUG is enabled. Shortcut logging calls if it isn't.
         self.debug = logger.isEnabledFor(logging.DEBUG)
 
-        assert loop is not None
-        # Remove when dropping Python < 3.10 - use get_running_loop instead.
+        try:
+            # Remove when dropping Python < 3.10
+            loop: asyncio.AbstractEventLoop = kwargs.pop("loop")
+            warnings.warn("remove loop argument", DeprecationWarning)
+        except KeyError:
+            loop = asyncio_get_running_loop()
         self.loop = loop
 
         self._host = host

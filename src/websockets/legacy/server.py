@@ -1053,7 +1053,6 @@ class Serve:
             max_queue=max_queue,
             read_limit=read_limit,
             write_limit=write_limit,
-            loop=loop,
             legacy_recv=legacy_recv,
             origins=origins,
             extensions=extensions,
@@ -1062,6 +1061,7 @@ class Serve:
             process_request=process_request,
             select_subprotocol=select_subprotocol,
             logger=logger,
+            **({"loop": kwargs["loop"]} if "loop" in kwargs else {}),
         )
 
         if kwargs.pop("unix", False):

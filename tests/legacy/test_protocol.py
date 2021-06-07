@@ -315,7 +315,8 @@ class CommonTests:
         self.assertEqual(protocol.close_timeout, 5)
 
         self.assertDeprecationWarnings(
-            recorded_warnings, ["rename timeout to close_timeout"]
+            recorded_warnings,
+            ["rename timeout to close_timeout", "remove loop argument"],
         )
 
     # Test public attributes.
